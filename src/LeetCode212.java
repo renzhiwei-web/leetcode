@@ -2,14 +2,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LeetCode212 {
+
+    private TrieNode root;
     public List<String> findWords(char[][] board, String[] words) {
         List<String> res = new ArrayList<String>();
+
         for (String word : words) {
             if (exist(board, word)) {
                 res.add(word);
             }
         }
+        /*
+        getTrie(words);//创建前缀树
+        for (int i = 0;i < board.length;i++){
+            for(int j = 0;j < board[0].length;i++){
+                if (helper(board,root.get(board[i][j]),i,j)) {
+                    res.add()
+                }
+            }
+        }*/
         return res;
+
     }
 
     /**
@@ -68,5 +81,88 @@ public class LeetCode212 {
             }
         }
         return false;
+    }
+
+    /**
+     * 通过单词列表中所有的单词构建前缀树，返回前缀树的头结点
+     * @param words
+     * @return
+     */
+    public void getTrie(String[] words){
+        root = new TrieNode();
+        for (String word : words) {
+            TrieNode curNode = root;
+            for(int i = 0;i < word.length();i++){
+                char curChar = word.charAt(i);
+                if (!curNode.containsKey(curChar)){
+                    curNode.put(curChar,new TrieNode()); //讲curChar字符放在新创建的TrieNode中
+                }
+                curNode = curNode.get(curChar);
+            }
+            curNode.setEnd();
+        }
+    }
+
+
+    /**
+     * 深度优先
+     *
+     */
+    private boolean helper(char[][] board, TrieNode curNode,int i,int j){
+        if (i < 0 || i >= board.length || j < 0 || j >= board[0].length) {
+            return false;
+        }
+        char ch = board[i][j];
+        if (ch == 1 || curNode.isEnd){
+            return false;
+        }
+        if (curNode.containsKey(board[i][j])) { //网格上当前坐标上的字符与当前节点的字符相同，比较字节的字符
+            board[i][j] = 1;
+            if (helper(board, curNode.get(ch), i + 1, j)) {
+                return true;
+            }else if (helper(board, curNode.get(ch), i, j + 1)){
+                return true;
+            }else if (helper(board, curNode.get(ch), i - 1, j)){
+                return true;
+            }else if (helper(board, curNode.get(ch), i, j - 1)){
+                return true;
+            }else{
+                board[i][j] = ch;
+                return false;
+            }
+        }
+        return false;
+    }
+    /**
+     * 前缀树
+     */
+    class TrieNode {
+
+        // R links to node children
+        private TrieNode[] links;
+
+        private final int R = 26;
+
+        private boolean isEnd;
+
+        public TrieNode() {
+            links = new TrieNode[R];
+        }
+
+        public boolean containsKey(char ch) {
+            return links[ch -'a'] != null;
+        }
+        public TrieNode get(char ch) {
+            return links[ch -'a'];
+        }
+        public void put(char ch, TrieNode node) {
+            links[ch -'a'] = node;
+        }
+        public void setEnd() {
+            isEnd = true;
+        }
+        public boolean isEnd() {
+            return isEnd;
+        }
     }
 }

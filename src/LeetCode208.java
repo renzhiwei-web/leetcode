@@ -46,6 +46,7 @@ public class LeetCode208 {
         TrieNode node = searchPrefix(prefix);
         return node != null;
     }
+
 }
 /*
 前缀树是一种多叉树,每个节点都存放着一个哈希表
