@@ -1,4 +1,4 @@
-public class LeectCode123 {
+public class LeetCode123 {
     public int maxProfit(int[] prices) {
         if(prices==null || prices.length==0) {
             return 0;
